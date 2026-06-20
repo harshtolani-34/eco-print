@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,12 +17,15 @@ import com.example.eco_print.utils.SupabaseClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.widget.TextView;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button loginButton;
+
+    private TextView registerText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +35,19 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
-
+        registerText = findViewById(R.id.registerText);
         loginButton.setOnClickListener(v -> loginUser());
+        registerText.setOnClickListener(v -> {
+
+            startActivity(
+                    new Intent(
+                            LoginActivity.this,
+                            RegisterActivity.class
+                    )
+            );
+
+            finish();
+        });
     }
 
     private void loginUser() {

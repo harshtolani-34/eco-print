@@ -16,12 +16,14 @@ import com.example.eco_print.utils.SupabaseClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.widget.TextView;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button registerButton;
+    private TextView loginText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +33,19 @@ public class RegisterActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         registerButton = findViewById(R.id.registerButton);
-
+        loginText = findViewById(R.id.loginText);
         registerButton.setOnClickListener(v -> registerUser());
+        loginText.setOnClickListener(v -> {
+
+            startActivity(
+                    new Intent(
+                            RegisterActivity.this,
+                            LoginActivity.class
+                    )
+            );
+
+            finish();
+        });
     }
 
     private void registerUser() {
