@@ -1,36 +1,44 @@
 package com.example.eco_print.utils;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SupabaseClient {
-
-    private static final String BASE_URL =
-            "https://mgjikkjowdugemmmwjpz.supabase.co/";
+public final class SupabaseClient {
 
     private static Retrofit retrofit;
+
+    private SupabaseClient() {
+        // Prevent object creation.
+    }
 
     public static Retrofit getClient() {
 
         if (retrofit == null) {
 
-            HttpLoggingInterceptor interceptor =
+            HttpLoggingInterceptor loggingInterceptor =
                     new HttpLoggingInterceptor();
 
-            interceptor.setLevel(
+            loggingInterceptor.setLevel(
                     HttpLoggingInterceptor.Level.BODY
             );
 
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(45, TimeUnit.SECONDS)
+                    .writeTimeout(45, TimeUnit.SECONDS)
+                    .addInterceptor(loggingInterceptor)
                     .build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(SupabaseConfig.SUPABASE_URL)
                     .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(
+                            GsonConverterFactory.create()
+                    )
                     .build();
         }
 

@@ -59,7 +59,10 @@
             android:layout_marginHorizontal="20dp"
             app:layout_constraintTop_toBottomOf="@id/welcomeText"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -69,12 +72,20 @@
                 android:textSize="16sp"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#7CFF5B"
-                android:textSize="32sp"
-                android:textStyle="bold"/>
+                    android:id="@+id/reportsCountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#7CFF5B"
+                    android:textSize="32sp"
+                    android:textStyle="bold"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Tap to view and track →"
+                    android:textColor="#AAAAAA"
+                    android:textSize="12sp" />
         </LinearLayout>
 
         <!-- Waste Card -->
@@ -94,16 +105,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🌍 Waste Collected"
+                android:text="🌍 Waste Reported"
                 android:textColor="#FFFFFF"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 KG"
-                android:textColor="#7CFF5B"
-                android:textSize="32sp"
-                android:textStyle="bold"/>
+                    android:id="@+id/wasteWeightText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 KG"
+                    android:textColor="#7CFF5B"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Points Card -->
@@ -127,12 +139,13 @@
                 android:textColor="#FFFFFF"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#7CFF5B"
-                android:textSize="32sp"
-                android:textStyle="bold"/>
+                    android:id="@+id/pointsCountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#7CFF5B"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

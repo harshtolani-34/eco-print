@@ -2,21 +2,24 @@ package com.example.eco_print;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eco_print.api.AuthApi;
+import com.example.eco_print.models.AuthResponse;
 import com.example.eco_print.models.User;
 import com.example.eco_print.utils.SessionManager;
 import com.example.eco_print.utils.SupabaseClient;
+import com.example.eco_print.utils.SupabaseConfig;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import android.widget.TextView;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -34,136 +37,155 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
         registerButton = findViewById(R.id.registerButton);
         loginText = findViewById(R.id.loginText);
-        registerButton.setOnClickListener(v -> registerUser());
-        loginText.setOnClickListener(v -> {
 
+        registerButton.setOnClickListener(v -> registerUser());
+
+        loginText.setOnClickListener(v -> {
             startActivity(
                     new Intent(
                             RegisterActivity.this,
                             LoginActivity.class
                     )
             );
-
             finish();
         });
     }
 
     private void registerUser() {
 
-        String email = emailEditText.getText().toString().trim();
-        String password = passwordEditText.getText().toString().trim();
+        String email =
+                emailEditText.getText().toString().trim();
 
-        // Validation
-        if (email.isEmpty()) {
+        String password =
+                passwordEditText.getText().toString();
 
-            Toast.makeText(
-                    RegisterActivity.this,
-                    "Please enter an email",
-                    Toast.LENGTH_SHORT
-            ).show();
-
+        if (email.isEmpty() || password.isEmpty()) {
+            showToast("Please fill all fields");
             return;
         }
 
-        if (password.isEmpty()) {
-
-            Toast.makeText(
-                    RegisterActivity.this,
-                    "Please enter a password",
-                    Toast.LENGTH_SHORT
-            ).show();
-
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailEditText.setError("Enter a valid email address");
+            emailEditText.requestFocus();
             return;
         }
 
         if (password.length() < 6) {
-
-            Toast.makeText(
-                    RegisterActivity.this,
-                    "Password must be at least 6 characters",
-                    Toast.LENGTH_SHORT
-            ).show();
-
+            passwordEditText.setError(
+                    "Password must be at least 6 characters"
+            );
+            passwordEditText.requestFocus();
             return;
         }
 
-        registerButton.setEnabled(false);
+        if (SupabaseConfig.SUPABASE_ANON_KEY
+                .equals("PASTE_YOUR_SUPABASE_ANON_KEY_HERE")) {
+            showToast("Add your Supabase anon key in SupabaseConfig.java");
+            return;
+        }
+
+        setLoading(true);
 
         User user = new User(email, password);
 
         AuthApi authApi =
                 SupabaseClient.getClient().create(AuthApi.class);
 
-        authApi.signUp(user).enqueue(new Callback<>() {
+        authApi.signUp(
+                SupabaseConfig.SUPABASE_ANON_KEY,
+                "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
+                "application/json",
+                user
+        ).enqueue(new Callback<AuthResponse>() {
 
             @Override
-            public void onResponse(Call<Object> call,
-                                   Response<Object> response) {
+            public void onResponse(
+                    Call<AuthResponse> call,
+                    Response<AuthResponse> response
+            ) {
+                setLoading(false);
 
-                registerButton.setEnabled(true);
+                AuthResponse authResponse = response.body();
 
-                if (response.isSuccessful()) {
+                if (response.isSuccessful()
+                        && authResponse != null
+                        && authResponse.getAccessToken() != null
+                        && authResponse.getUser() != null) {
 
-                    Toast.makeText(
-                            RegisterActivity.this,
-                            "Registration Successful!",
-                            Toast.LENGTH_LONG
-                    ).show();
-
-                    // Save Login Session
                     SessionManager sessionManager =
                             new SessionManager(RegisterActivity.this);
 
-                    sessionManager.setLoggedIn(true);
+                    sessionManager.saveSession(
+                            authResponse.getAccessToken(),
+                            authResponse.getRefreshToken(),
+                            authResponse.getUser().getId(),
+                            authResponse.getUser().getEmail()
+                    );
 
-                    // Go to Home Screen
+                    showToast("Registration successful");
+
+                    Intent intent = new Intent(
+                            RegisterActivity.this,
+                            HomeActivity.class
+                    );
+
+                    intent.addFlags(
+                            Intent.FLAG_ACTIVITY_NEW_TASK
+                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    );
+
+                    startActivity(intent);
+                    return;
+                }
+
+                if (response.isSuccessful()) {
+                    showToast(
+                            "Account created. Verify your email, then log in."
+                    );
+
                     startActivity(
                             new Intent(
                                     RegisterActivity.this,
-                                    HomeActivity.class
+                                    LoginActivity.class
                             )
                     );
 
                     finish();
-
                 } else {
-
-                    try {
-
-                        String errorMessage =
-                                response.errorBody() != null
-                                        ? response.errorBody().string()
-                                        : "Registration Failed";
-
-                        Toast.makeText(
-                                RegisterActivity.this,
-                                errorMessage,
-                                Toast.LENGTH_LONG
-                        ).show();
-
-                    } catch (Exception e) {
-
-                        Toast.makeText(
-                                RegisterActivity.this,
-                                "Registration Failed",
-                                Toast.LENGTH_LONG
-                        ).show();
-                    }
+                    showToast(
+                            "Registration failed. Error code: "
+                                    + response.code()
+                    );
                 }
             }
 
             @Override
-            public void onFailure(Call<Object> call,
-                                  Throwable t) {
+            public void onFailure(
+                    Call<AuthResponse> call,
+                    Throwable throwable
+            ) {
+                setLoading(false);
 
-                registerButton.setEnabled(true);
-
-                Toast.makeText(
-                        RegisterActivity.this,
-                        "Network Error: " + t.getMessage(),
-                        Toast.LENGTH_LONG
-                ).show();
+                showToast(
+                        "Network error: "
+                                + throwable.getMessage()
+                );
             }
         });
+    }
+
+    private void setLoading(boolean loading) {
+        registerButton.setEnabled(!loading);
+        registerButton.setText(
+                loading ? "CREATING ACCOUNT..." : "REGISTER"
+        );
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(
+                this,
+                message,
+                Toast.LENGTH_LONG
+        ).show();
     }
 }

@@ -1,28 +1,28 @@
 package com.example.eco_print.api;
 
+import com.example.eco_print.models.AuthResponse;
 import com.example.eco_print.models.User;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Headers;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 public interface AuthApi {
 
-    @Headers({
-            "apikey:",
-            "Authorization:",
-            "Content-Type: application/json"
-    })
-
     @POST("auth/v1/signup")
-    Call<Object> signUp(@Body User user);
+    Call<AuthResponse> signUp(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authorization,
+            @Header("Content-Type") String contentType,
+            @Body User user
+    );
 
-    @Headers({
-            "apikey: ",
-            "Authorization:",
-            "Content-Type: application/json"
-    })
     @POST("auth/v1/token?grant_type=password")
-    Call<Object> login(@Body User user);
+    Call<AuthResponse> login(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authorization,
+            @Header("Content-Type") String contentType,
+            @Body User user
+    );
 }
