@@ -9,6 +9,9 @@ public class WasteReport {
     @SerializedName("user_id")
     private final String userId;
 
+    @SerializedName("collector_id")
+    private String collectorId;
+
     @SerializedName("image_url")
     private final String imageUrl;
 
@@ -27,10 +30,23 @@ public class WasteReport {
     @SerializedName("created_at")
     private String createdAt;
 
-    public WasteReport(String userId, String imageUrl, String wasteType,
-                       double estimatedWeightKg, String description,
-                       double latitude, double longitude, String address,
-                       String status) {
+    @SerializedName("assigned_at")
+    private String assignedAt;
+
+    @SerializedName("collected_at")
+    private String collectedAt;
+
+    public WasteReport(
+            String userId,
+            String imageUrl,
+            String wasteType,
+            double estimatedWeightKg,
+            String description,
+            double latitude,
+            double longitude,
+            String address,
+            String status
+    ) {
         this.userId = userId;
         this.imageUrl = imageUrl;
         this.wasteType = wasteType;
@@ -42,15 +58,59 @@ public class WasteReport {
         this.status = status;
     }
 
-    public String getId() { return id; }
-    public String getUserId() { return userId; }
-    public String getImageUrl() { return imageUrl; }
-    public String getWasteType() { return wasteType; }
-    public double getEstimatedWeightKg() { return estimatedWeightKg; }
-    public String getDescription() { return description; }
-    public double getLatitude() { return latitude; }
-    public double getLongitude() { return longitude; }
-    public String getAddress() { return address; }
-    public String getStatus() { return status; }
-    public String getCreatedAt() { return createdAt; }
+    public String getId() {
+        return id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getCollectorId() {
+        return collectorId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public String getWasteType() {
+        return wasteType;
+    }
+
+    public double getEstimatedWeightKg() {
+        return estimatedWeightKg;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getAssignedAt() {
+        return assignedAt;
+    }
+
+    public String getCollectedAt() {
+        return collectedAt;
+    }
 }

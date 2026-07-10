@@ -1,5 +1,6 @@
 package com.example.eco_print.api;
 
+import com.example.eco_print.models.AcceptReportRequest;
 import com.example.eco_print.models.StorageUploadResponse;
 import com.example.eco_print.models.WasteReport;
 
@@ -53,5 +54,35 @@ public interface WasteReportApi {
             @Header("Authorization") String authorization,
             @Query("id") String idFilter,
             @Query("select") String select
+    );
+
+    @GET("rest/v1/waste_reports")
+    Call<List<WasteReport>> getAvailableReports(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authorization,
+            @Query("status") String statusFilter,
+            @Query("collector_id") String collectorFilter,
+            @Query("select") String select,
+            @Query("order") String order
+    );
+
+    @GET("rest/v1/waste_reports")
+    Call<List<WasteReport>> getAcceptedReports(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authorization,
+            @Query("collector_id") String collectorFilter,
+            @Query("select") String select,
+            @Query("order") String order
+    );
+
+    @Headers({
+            "Content-Type: application/json",
+            "Prefer: return=representation"
+    })
+    @POST("rest/v1/rpc/accept_waste_report")
+    Call<List<WasteReport>> acceptWasteReport(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authorization,
+            @Body AcceptReportRequest request
     );
 }

@@ -11,11 +11,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eco_print.api.AuthApi;
+import com.example.eco_print.api.ProfileApi;
 import com.example.eco_print.models.AuthResponse;
+import com.example.eco_print.models.CitizenProfileRequest;
+import com.example.eco_print.models.CollectorApplicationRequest;
 import com.example.eco_print.models.User;
+import com.example.eco_print.models.UserProfile;
+import com.example.eco_print.utils.CollectorApplicationManager;
+import com.example.eco_print.utils.RoleNavigator;
 import com.example.eco_print.utils.SessionManager;
 import com.example.eco_print.utils.SupabaseClient;
 import com.example.eco_print.utils.SupabaseConfig;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,15 +48,14 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(v -> loginUser());
 
-        registerText.setOnClickListener(v -> {
-            startActivity(
-                    new Intent(
-                            LoginActivity.this,
-                            RegisterActivity.class
-                    )
-            );
-            finish();
-        });
+        registerText.setOnClickListener(v ->
+                startActivity(
+                        new Intent(
+                                LoginActivity.this,
+                                AccountTypeActivity.class
+                        )
+                )
+        );
     }
 
     private void loginUser() {
@@ -70,24 +77,17 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        if (SupabaseConfig.SUPABASE_ANON_KEY
-                .equals("PASTE_YOUR_SUPABASE_ANON_KEY_HERE")) {
-            showToast("Add your Supabase anon key in SupabaseConfig.java");
-            return;
-        }
-
         setLoading(true);
 
-        User user = new User(email, password);
-
         AuthApi authApi =
-                SupabaseClient.getClient().create(AuthApi.class);
+                SupabaseClient.getClient()
+                        .create(AuthApi.class);
 
         authApi.login(
                 SupabaseConfig.SUPABASE_ANON_KEY,
                 "Bearer " + SupabaseConfig.SUPABASE_ANON_KEY,
                 "application/json",
-                user
+                new User(email, password)
         ).enqueue(new Callback<AuthResponse>() {
 
             @Override
@@ -95,8 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                     Call<AuthResponse> call,
                     Response<AuthResponse> response
             ) {
-                setLoading(false);
-
                 AuthResponse authResponse = response.body();
 
                 if (response.isSuccessful()
@@ -114,21 +112,11 @@ public class LoginActivity extends AppCompatActivity {
                             authResponse.getUser().getEmail()
                     );
 
-                    showToast("Login successful");
-
-                    Intent intent = new Intent(
-                            LoginActivity.this,
-                            HomeActivity.class
-                    );
-
-                    intent.addFlags(
-                            Intent.FLAG_ACTIVITY_NEW_TASK
-                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    );
-
-                    startActivity(intent);
+                    loadOrCreateProfile(sessionManager);
                     return;
                 }
+
+                setLoading(false);
 
                 if (response.code() == 400) {
                     showToast("Invalid email or password");
@@ -146,13 +134,196 @@ public class LoginActivity extends AppCompatActivity {
                     Throwable throwable
             ) {
                 setLoading(false);
-
                 showToast(
                         "Network error: "
                                 + throwable.getMessage()
                 );
             }
         });
+    }
+
+    private void loadOrCreateProfile(
+            SessionManager sessionManager
+    ) {
+        ProfileApi profileApi =
+                SupabaseClient.getClient()
+                        .create(ProfileApi.class);
+
+        profileApi.getMyProfile(
+                SupabaseConfig.SUPABASE_ANON_KEY,
+                sessionManager.getAuthorizationHeader(),
+                "eq." + sessionManager.getUserId(),
+                "*"
+        ).enqueue(new Callback<List<UserProfile>>() {
+
+            @Override
+            public void onResponse(
+                    Call<List<UserProfile>> call,
+                    Response<List<UserProfile>> response
+            ) {
+                if (response.isSuccessful()
+                        && response.body() != null
+                        && !response.body().isEmpty()) {
+
+                    finishLogin(
+                            sessionManager,
+                            response.body().get(0)
+                    );
+                    return;
+                }
+
+                if (response.isSuccessful()) {
+                    createMissingProfile(sessionManager);
+                    return;
+                }
+
+                setLoading(false);
+                showToast(
+                        "Unable to load account role. Error code: "
+                                + response.code()
+                );
+            }
+
+            @Override
+            public void onFailure(
+                    Call<List<UserProfile>> call,
+                    Throwable throwable
+            ) {
+                setLoading(false);
+                showToast(
+                        "Profile error: "
+                                + throwable.getMessage()
+                );
+            }
+        });
+    }
+
+    private void createMissingProfile(
+            SessionManager sessionManager
+    ) {
+        CollectorApplicationManager applicationManager =
+                new CollectorApplicationManager(this);
+
+        ProfileApi profileApi =
+                SupabaseClient.getClient()
+                        .create(ProfileApi.class);
+
+        if (applicationManager.matchesEmail(
+                sessionManager.getUserEmail()
+        )) {
+            CollectorApplicationRequest request =
+                    new CollectorApplicationRequest(
+                            applicationManager.getName(),
+                            applicationManager.getAge(),
+                            sessionManager.getUserEmail(),
+                            applicationManager.getCompanyCode()
+                    );
+
+            profileApi.applyAsCollector(
+                    SupabaseConfig.SUPABASE_ANON_KEY,
+                    sessionManager.getAuthorizationHeader(),
+                    request
+            ).enqueue(profileCreationCallback(
+                    sessionManager,
+                    applicationManager
+            ));
+
+        } else {
+            String defaultName = createDefaultName(
+                    sessionManager.getUserEmail()
+            );
+
+            profileApi.createCitizenProfile(
+                    SupabaseConfig.SUPABASE_ANON_KEY,
+                    sessionManager.getAuthorizationHeader(),
+                    new CitizenProfileRequest(
+                            defaultName,
+                            sessionManager.getUserEmail()
+                    )
+            ).enqueue(profileCreationCallback(
+                    sessionManager,
+                    null
+            ));
+        }
+    }
+
+    private Callback<List<UserProfile>> profileCreationCallback(
+            SessionManager sessionManager,
+            CollectorApplicationManager applicationManager
+    ) {
+        return new Callback<List<UserProfile>>() {
+
+            @Override
+            public void onResponse(
+                    Call<List<UserProfile>> call,
+                    Response<List<UserProfile>> response
+            ) {
+                setLoading(false);
+
+                if (response.isSuccessful()
+                        && response.body() != null
+                        && !response.body().isEmpty()) {
+
+                    if (applicationManager != null) {
+                        applicationManager.clear();
+                    }
+
+                    finishLogin(
+                            sessionManager,
+                            response.body().get(0)
+                    );
+                    return;
+                }
+
+                showToast(
+                        "Unable to create account profile. Error code: "
+                                + response.code()
+                );
+            }
+
+            @Override
+            public void onFailure(
+                    Call<List<UserProfile>> call,
+                    Throwable throwable
+            ) {
+                setLoading(false);
+                showToast(
+                        "Profile creation failed: "
+                                + throwable.getMessage()
+                );
+            }
+        };
+    }
+
+    private void finishLogin(
+            SessionManager sessionManager,
+            UserProfile profile
+    ) {
+        setLoading(false);
+
+        sessionManager.saveProfile(
+                profile.getRole(),
+                profile.getFullName(),
+                profile.getCollectorStatus()
+        );
+
+        showToast("Login successful");
+
+        RoleNavigator.openCorrectHome(
+                this,
+                sessionManager
+        );
+    }
+
+    private String createDefaultName(String email) {
+        if (email == null || !email.contains("@")) {
+            return "Citizen";
+        }
+
+        String name = email.substring(0, email.indexOf('@'));
+        return name.replace('.', ' ')
+                .replace('_', ' ')
+                .trim();
     }
 
     private void setLoading(boolean loading) {

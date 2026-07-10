@@ -12,6 +12,9 @@ public class SessionManager {
     private static final String KEY_REFRESH_TOKEN = "refreshToken";
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_USER_EMAIL = "userEmail";
+    private static final String KEY_USER_ROLE = "userRole";
+    private static final String KEY_USER_NAME = "userName";
+    private static final String KEY_COLLECTOR_STATUS = "collectorStatus";
 
     private final SharedPreferences preferences;
 
@@ -37,9 +40,26 @@ public class SessionManager {
                 .apply();
     }
 
-    public void setLoggedIn(boolean loggedIn) {
+    public void saveProfile(
+            String role,
+            String userName,
+            String collectorStatus
+    ) {
         preferences.edit()
-                .putBoolean(KEY_LOGIN, loggedIn)
+                .putString(
+                        KEY_USER_ROLE,
+                        role == null ? "citizen" : role
+                )
+                .putString(
+                        KEY_USER_NAME,
+                        userName == null ? "" : userName
+                )
+                .putString(
+                        KEY_COLLECTOR_STATUS,
+                        collectorStatus == null
+                                ? "not_applicable"
+                                : collectorStatus
+                )
                 .apply();
     }
 
@@ -63,6 +83,32 @@ public class SessionManager {
 
     public String getUserEmail() {
         return preferences.getString(KEY_USER_EMAIL, "");
+    }
+
+    public String getUserRole() {
+        return preferences.getString(KEY_USER_ROLE, "citizen");
+    }
+
+    public String getUserName() {
+        return preferences.getString(KEY_USER_NAME, "");
+    }
+
+    public String getCollectorStatus() {
+        return preferences.getString(
+                KEY_COLLECTOR_STATUS,
+                "not_applicable"
+        );
+    }
+
+    public boolean isCollector() {
+        return "collector".equalsIgnoreCase(getUserRole());
+    }
+
+    public boolean isApprovedCollector() {
+        return isCollector()
+                && "approved".equalsIgnoreCase(
+                getCollectorStatus()
+        );
     }
 
     public String getAuthorizationHeader() {

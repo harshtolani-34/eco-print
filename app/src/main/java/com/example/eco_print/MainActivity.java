@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eco_print.utils.RoleNavigator;
 import com.example.eco_print.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,24 +18,18 @@ public class MainActivity extends AppCompatActivity {
                 new SessionManager(this);
 
         if (sessionManager.isLoggedIn()) {
-
-            startActivity(
-                    new Intent(
-                            MainActivity.this,
-                            HomeActivity.class
-                    )
+            RoleNavigator.openCorrectHome(
+                    this,
+                    sessionManager
             );
-
         } else {
-
             startActivity(
                     new Intent(
                             MainActivity.this,
                             WelcomeActivity.class
                     )
             );
+            finish();
         }
-
-        finish();
     }
 }

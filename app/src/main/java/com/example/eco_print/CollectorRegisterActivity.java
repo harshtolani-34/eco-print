@@ -5,17 +5,19 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eco_print.api.AuthApi;
 import com.example.eco_print.api.ProfileApi;
 import com.example.eco_print.models.AuthResponse;
-import com.example.eco_print.models.CitizenProfileRequest;
+import com.example.eco_print.models.CollectorApplicationRequest;
 import com.example.eco_print.models.User;
 import com.example.eco_print.models.UserProfile;
+import com.example.eco_print.utils.CollectorApplicationManager;
 import com.example.eco_print.utils.RoleNavigator;
 import com.example.eco_print.utils.SessionManager;
 import com.example.eco_print.utils.SupabaseClient;
@@ -27,36 +29,60 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterActivity extends AppCompatActivity {
+public class CollectorRegisterActivity
+        extends AppCompatActivity {
 
+    private EditText nameEditText;
+    private EditText ageEditText;
     private EditText emailEditText;
     private EditText passwordEditText;
-    private Button registerButton;
-    private TextView loginText;
+    private EditText companyCodeEditText;
+    private Button applyButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(
+                R.layout.activity_collector_register
+        );
 
-        emailEditText = findViewById(R.id.emailEditText);
-        passwordEditText = findViewById(R.id.passwordEditText);
-        registerButton = findViewById(R.id.registerButton);
-        loginText = findViewById(R.id.loginText);
+        ImageButton backButton =
+                findViewById(R.id.backButton);
 
-        registerButton.setOnClickListener(v -> registerCitizen());
+        nameEditText =
+                findViewById(R.id.nameEditText);
 
-        loginText.setOnClickListener(v ->
-                startActivity(
-                        new Intent(
-                                RegisterActivity.this,
-                                LoginActivity.class
-                        )
-                )
+        ageEditText =
+                findViewById(R.id.ageEditText);
+
+        emailEditText =
+                findViewById(R.id.emailEditText);
+
+        passwordEditText =
+                findViewById(R.id.passwordEditText);
+
+        companyCodeEditText =
+                findViewById(R.id.companyCodeEditText);
+
+        applyButton =
+                findViewById(R.id.applyButton);
+
+        backButton.setOnClickListener(v ->
+                getOnBackPressedDispatcher().onBackPressed()
+        );
+
+        applyButton.setOnClickListener(v ->
+                submitCollectorApplication()
         );
     }
 
-    private void registerCitizen() {
+    private void submitCollectorApplication() {
+
+        String name =
+                nameEditText.getText().toString().trim();
+
+        String ageText =
+                ageEditText.getText().toString().trim();
 
         String email =
                 emailEditText.getText().toString().trim();
@@ -64,8 +90,33 @@ public class RegisterActivity extends AppCompatActivity {
         String password =
                 passwordEditText.getText().toString();
 
-        if (email.isEmpty() || password.isEmpty()) {
-            showToast("Please fill all fields");
+        String companyCode =
+                companyCodeEditText.getText()
+                        .toString()
+                        .trim()
+                        .toUpperCase();
+
+        if (name.length() < 3) {
+            nameEditText.setError("Enter your full name");
+            nameEditText.requestFocus();
+            return;
+        }
+
+        int age;
+
+        try {
+            age = Integer.parseInt(ageText);
+        } catch (NumberFormatException exception) {
+            ageEditText.setError("Enter a valid age");
+            ageEditText.requestFocus();
+            return;
+        }
+
+        if (age < 18 || age > 70) {
+            ageEditText.setError(
+                    "Collector age must be between 18 and 70"
+            );
+            ageEditText.requestFocus();
             return;
         }
 
@@ -82,6 +133,24 @@ public class RegisterActivity extends AppCompatActivity {
             passwordEditText.requestFocus();
             return;
         }
+
+        if (companyCode.length() < 4) {
+            companyCodeEditText.setError(
+                    "Enter the company identification code"
+            );
+            companyCodeEditText.requestFocus();
+            return;
+        }
+
+        CollectorApplicationManager applicationManager =
+                new CollectorApplicationManager(this);
+
+        applicationManager.saveApplication(
+                name,
+                age,
+                email,
+                companyCode
+        );
 
         setLoading(true);
 
@@ -109,7 +178,9 @@ public class RegisterActivity extends AppCompatActivity {
                         && authResponse.getUser() != null) {
 
                     SessionManager sessionManager =
-                            new SessionManager(RegisterActivity.this);
+                            new SessionManager(
+                                    CollectorRegisterActivity.this
+                            );
 
                     sessionManager.saveSession(
                             authResponse.getAccessToken(),
@@ -118,7 +189,14 @@ public class RegisterActivity extends AppCompatActivity {
                             authResponse.getUser().getEmail()
                     );
 
-                    createCitizenProfile(sessionManager);
+                    createCollectorProfile(
+                            sessionManager,
+                            applicationManager,
+                            name,
+                            age,
+                            email,
+                            companyCode
+                    );
                     return;
                 }
 
@@ -126,12 +204,13 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     showToast(
-                            "Account created. Verify your email, then log in."
+                            "Application account created. "
+                                    + "Verify your email and log in to continue."
                     );
                     openLogin();
                 } else {
                     showToast(
-                            "Registration failed. Error code: "
+                            "Application failed. Error code: "
                                     + response.code()
                     );
                 }
@@ -151,23 +230,26 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void createCitizenProfile(
-            SessionManager sessionManager
+    private void createCollectorProfile(
+            SessionManager sessionManager,
+            CollectorApplicationManager applicationManager,
+            String name,
+            int age,
+            String email,
+            String companyCode
     ) {
         ProfileApi profileApi =
                 SupabaseClient.getClient()
                         .create(ProfileApi.class);
 
-        String defaultName = createDefaultName(
-                sessionManager.getUserEmail()
-        );
-
-        profileApi.createCitizenProfile(
+        profileApi.applyAsCollector(
                 SupabaseConfig.SUPABASE_ANON_KEY,
                 sessionManager.getAuthorizationHeader(),
-                new CitizenProfileRequest(
-                        defaultName,
-                        sessionManager.getUserEmail()
+                new CollectorApplicationRequest(
+                        name,
+                        age,
+                        email,
+                        companyCode
                 )
         ).enqueue(new Callback<List<UserProfile>>() {
 
@@ -191,18 +273,14 @@ public class RegisterActivity extends AppCompatActivity {
                             profile.getCollectorStatus()
                     );
 
-                    showToast("Citizen account created");
-
-                    RoleNavigator.openCorrectHome(
-                            RegisterActivity.this,
-                            sessionManager
-                    );
+                    applicationManager.clear();
+                    showPrototypeApprovalDialog(sessionManager);
                     return;
                 }
 
                 showToast(
-                        "Account created, but profile setup failed. "
-                                + "Please log in again."
+                        "Account created, but collector profile failed. "
+                                + "Log in again to retry."
                 );
                 openLogin();
             }
@@ -214,22 +292,35 @@ public class RegisterActivity extends AppCompatActivity {
             ) {
                 setLoading(false);
                 showToast(
-                        "Profile setup failed. Please log in again."
+                        "Collector profile failed. Log in again to retry."
                 );
                 openLogin();
             }
         });
     }
 
-    private String createDefaultName(String email) {
-        if (email == null || !email.contains("@")) {
-            return "Citizen";
-        }
-
-        return email.substring(0, email.indexOf('@'))
-                .replace('.', ' ')
-                .replace('_', ' ')
-                .trim();
+    private void showPrototypeApprovalDialog(
+            SessionManager sessionManager
+    ) {
+        new AlertDialog.Builder(this)
+                .setTitle("Application Submitted")
+                .setMessage(
+                        "Your collector application has been received.\n\n"
+                                + "Prototype Mode: The application has been "
+                                + "temporarily approved so the Collector "
+                                + "module can be tested before the Admin "
+                                + "module is implemented."
+                )
+                .setCancelable(false)
+                .setPositiveButton(
+                        "Continue to Collector App",
+                        (dialog, which) ->
+                                RoleNavigator.openCorrectHome(
+                                        CollectorRegisterActivity.this,
+                                        sessionManager
+                                )
+                )
+                .show();
     }
 
     private void openLogin() {
@@ -248,9 +339,11 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setLoading(boolean loading) {
-        registerButton.setEnabled(!loading);
-        registerButton.setText(
-                loading ? "CREATING ACCOUNT..." : "REGISTER"
+        applyButton.setEnabled(!loading);
+        applyButton.setText(
+                loading
+                        ? "SUBMITTING APPLICATION..."
+                        : "APPLY AS COLLECTOR"
         );
     }
 

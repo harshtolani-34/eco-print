@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    Button loginButton;
-    Button registerButton;
+    private Button loginButton;
+    private Button registerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +25,16 @@ public class WelcomeActivity extends AppCompatActivity {
                                 WelcomeActivity.this,
                                 LoginActivity.class
                         )
-                ));
+                )
+        );
 
         registerButton.setOnClickListener(v ->
                 startActivity(
                         new Intent(
                                 WelcomeActivity.this,
-                                RegisterActivity.class
+                                AccountTypeActivity.class
                         )
-                ));
+                )
+        );
     }
 }
