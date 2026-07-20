@@ -14,22 +14,25 @@
             android:layout_marginTop="22dp"
             android:text="Collector Dashboard"
             android:textColor="#7CFF5B"
-            android:textSize="27sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/profileImage"
             app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-            android:id="@+id/logoutButton"
-            android:layout_width="wrap_content"
-            android:layout_height="46dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginEnd="14dp"
-            android:backgroundTint="#222222"
-            android:text="LOGOUT"
-            android:textColor="#FFFFFF"
-            android:textSize="11sp"
-            android:textStyle="bold"
+    <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileImage"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="Collector profile picture"
+            android:padding="2dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_default_profile"
+            app:shapeAppearanceOverlay="@style/EcoPrintProfileCircle"
+            app:strokeColor="#7CFF5B"
+            app:strokeWidth="1.5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -172,19 +175,40 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/availableSubtitle" />
 
-    <TextView
-            android:id="@+id/emptyStateText"
-            android:layout_width="280dp"
+    <LinearLayout
+            android:id="@+id/stateContainer"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:lineSpacingExtra="4dp"
-            android:text="No available reports right now.\n\nNew Pending citizen reports will appear here."
-            android:textColor="#999999"
-            android:textSize="15sp"
+            android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/availableSubtitle" />
+            app:layout_constraintTop_toBottomOf="@id/availableSubtitle">
+
+        <TextView
+                android:id="@+id/emptyStateText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:text="No available reports right now.\n\nNew Pending citizen reports will appear here."
+                android:textColor="#999999"
+                android:textSize="15sp" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/retryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginTop="18dp"
+                android:text="TRY AGAIN"
+                android:textColor="#071200"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:backgroundTint="#7CFF5B"
+                app:cornerRadius="14dp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

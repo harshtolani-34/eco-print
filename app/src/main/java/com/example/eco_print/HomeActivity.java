@@ -3,10 +3,12 @@ package com.example.eco_print;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -15,6 +17,7 @@ import com.example.eco_print.models.WasteReport;
 import com.example.eco_print.utils.SessionManager;
 import com.example.eco_print.utils.SupabaseClient;
 import com.example.eco_print.utils.SupabaseConfig;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
@@ -29,7 +32,11 @@ public class HomeActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageButton menuButton;
+    private ShapeableImageView profileImage;
+    private TextView welcomeText;
 
+    private View reportActionCard;
+    private Button reportWasteButton;
     private View reportsCard;
     private TextView reportsCountText;
     private TextView wasteWeightText;
@@ -42,19 +49,27 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        drawerLayout = findViewById(R.id.drawerLayout);
-        navigationView = findViewById(R.id.navigationView);
-        menuButton = findViewById(R.id.menuButton);
-        reportsCard = findViewById(R.id.reportsCard);
-        reportsCountText = findViewById(R.id.reportsCountText);
-        wasteWeightText = findViewById(R.id.wasteWeightText);
-        pointsCountText = findViewById(R.id.pointsCountText);
+        bindViews();
 
         sessionManager = new SessionManager(this);
+        updateGreeting();
 
         menuButton.setOnClickListener(v ->
                 drawerLayout.openDrawer(navigationView)
         );
+
+        profileImage.setOnClickListener(v ->
+                showProfileMenu()
+        );
+
+        View.OnClickListener openReportForm = v ->
+                startActivity(new Intent(
+                        HomeActivity.this,
+                        WasteReportActivity.class
+                ));
+
+        reportActionCard.setOnClickListener(openReportForm);
+        reportWasteButton.setOnClickListener(openReportForm);
 
         reportsCard.setOnClickListener(v ->
                 startActivity(new Intent(
@@ -63,6 +78,24 @@ public class HomeActivity extends AppCompatActivity {
                 ))
         );
 
+        configureNavigation();
+    }
+
+    private void bindViews() {
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigationView);
+        menuButton = findViewById(R.id.menuButton);
+        profileImage = findViewById(R.id.profileImage);
+        welcomeText = findViewById(R.id.welcomeText);
+        reportActionCard = findViewById(R.id.reportActionCard);
+        reportWasteButton = findViewById(R.id.reportWasteButton);
+        reportsCard = findViewById(R.id.reportsCard);
+        reportsCountText = findViewById(R.id.reportsCountText);
+        wasteWeightText = findViewById(R.id.wasteWeightText);
+        pointsCountText = findViewById(R.id.pointsCountText);
+    }
+
+    private void configureNavigation() {
         navigationView.setCheckedItem(R.id.nav_home);
 
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -89,9 +122,21 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    private void updateGreeting() {
+        String userName = sessionManager.getUserName();
+        String displayName = userName == null || userName.trim().isEmpty()
+                ? "there"
+                : userName.trim();
+
+        welcomeText.setText(
+                "Welcome back, " + displayName + " 🌱"
+        );
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        updateGreeting();
         loadDashboardStatistics();
     }
 
@@ -101,12 +146,17 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
 
+        if (!SupabaseConfig.isConfigured()) {
+            return;
+        }
+
         WasteReportApi api = SupabaseClient.getClient()
                 .create(WasteReportApi.class);
 
         api.getMyWasteReports(
                 SupabaseConfig.SUPABASE_ANON_KEY,
                 sessionManager.getAuthorizationHeader(),
+                "eq." + sessionManager.getUserId(),
                 "*",
                 "created_at.desc"
         ).enqueue(new Callback<List<WasteReport>>() {
@@ -123,7 +173,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (!response.isSuccessful() || response.body() == null) {
                     Toast.makeText(
                             HomeActivity.this,
-                            "Unable to load dashboard data",
+                            "Unable to load your impact summary",
                             Toast.LENGTH_SHORT
                     ).show();
                     return;
@@ -152,11 +202,31 @@ public class HomeActivity extends AppCompatActivity {
             ) {
                 Toast.makeText(
                         HomeActivity.this,
-                        "Dashboard error: " + throwable.getMessage(),
+                        "Could not refresh your impact summary",
                         Toast.LENGTH_SHORT
                 ).show();
             }
         });
+    }
+
+    private void showProfileMenu() {
+        String userName = sessionManager.getUserName();
+        String displayName = userName == null || userName.trim().isEmpty()
+                ? "Citizen"
+                : userName.trim();
+
+        new AlertDialog.Builder(this)
+                .setTitle(displayName)
+                .setMessage(
+                        sessionManager.getUserEmail()
+                                + "\n\nRole: Citizen"
+                )
+                .setNegativeButton("Close", null)
+                .setPositiveButton(
+                        "Logout",
+                        (dialog, which) -> logoutUser()
+                )
+                .show();
     }
 
     private void logoutUser() {

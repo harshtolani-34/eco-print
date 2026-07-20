@@ -58,13 +58,11 @@ public class ReportHistoryAdapter
         Context context = holder.itemView.getContext();
 
         holder.plasticTypeText.setText(
-                safeText(report.getWasteType(), "Plastic Waste")
+                formatWasteType(report.getWasteType())
         );
-        holder.weightText.setText(String.format(
-                Locale.getDefault(),
-                "%.2f kg",
-                report.getEstimatedWeightKg()
-        ));
+        holder.weightText.setText(
+                formatWeight(report.getEstimatedWeightKg())
+        );
         holder.dateText.setText(formatDate(report.getCreatedAt()));
         holder.statusText.setText(
                 safeText(report.getStatus(), "Pending")
@@ -102,6 +100,26 @@ public class ReportHistoryAdapter
     @Override
     public int getItemCount() {
         return reports.size();
+    }
+
+    private String formatWasteType(String wasteType) {
+        if (wasteType == null
+                || wasteType.trim().isEmpty()
+                || wasteType.equalsIgnoreCase("Not specified")) {
+            return "Plastic type not provided";
+        }
+        return wasteType;
+    }
+
+    private String formatWeight(double weight) {
+        if (weight <= 0) {
+            return "Weight not provided";
+        }
+        return String.format(
+                Locale.getDefault(),
+                "%.2f kg",
+                weight
+        );
     }
 
     private String safeText(String value, String fallback) {

@@ -12,6 +12,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -67,6 +68,7 @@ public class ReportDetailsActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
     private String reportId;
+    private Call<List<WasteReport>> detailsCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,22 +138,41 @@ public class ReportDetailsActivity extends AppCompatActivity {
             return;
         }
 
+        if (!SupabaseConfig.isConfigured()) {
+            showLoadError(
+                    "Supabase is not configured. Add the anon key and try again."
+            );
+            return;
+        }
+
+        if (detailsCall != null) {
+            detailsCall.cancel();
+        }
+
         setLoading(true);
 
         WasteReportApi api = SupabaseClient.getClient()
                 .create(WasteReportApi.class);
 
-        api.getWasteReportById(
+        detailsCall = api.getWasteReportById(
                 SupabaseConfig.SUPABASE_ANON_KEY,
                 sessionManager.getAuthorizationHeader(),
                 "eq." + reportId,
                 "*"
-        ).enqueue(new Callback<List<WasteReport>>() {
+        );
+
+        detailsCall.enqueue(new Callback<List<WasteReport>>() {
             @Override
             public void onResponse(
                     Call<List<WasteReport>> call,
                     Response<List<WasteReport>> response
             ) {
+                detailsCall = null;
+
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+
                 setLoading(false);
 
                 if (response.code() == 401) {
@@ -161,8 +182,10 @@ public class ReportDetailsActivity extends AppCompatActivity {
                 }
 
                 if (!response.isSuccessful() || response.body() == null) {
-                    showToast("Unable to load report. Error code: "
-                            + response.code());
+                    showLoadError(
+                            "Unable to load this report. Error "
+                                    + response.code()
+                    );
                     return;
                 }
 
@@ -180,9 +203,18 @@ public class ReportDetailsActivity extends AppCompatActivity {
                     Call<List<WasteReport>> call,
                     Throwable throwable
             ) {
+                detailsCall = null;
+
+                if (call.isCanceled()
+                        || isFinishing()
+                        || isDestroyed()) {
+                    return;
+                }
+
                 setLoading(false);
-                showToast("Unable to load report: "
-                        + throwable.getMessage());
+                showLoadError(
+                        "Could not connect to the server. Check your internet and try again."
+                );
             }
         });
     }
@@ -199,13 +231,11 @@ public class ReportDetailsActivity extends AppCompatActivity {
 
         statusText.setText(status);
         plasticTypeText.setText(
-                safeText(report.getWasteType(), "Plastic Waste")
+                formatWasteType(report.getWasteType())
         );
-        weightText.setText(String.format(
-                Locale.getDefault(),
-                "%.2f kg",
-                report.getEstimatedWeightKg()
-        ));
+        weightText.setText(
+                formatWeight(report.getEstimatedWeightKg())
+        );
         dateText.setText(formatDate(report.getCreatedAt()));
         descriptionText.setText(
                 safeText(report.getDescription(), "No description provided")
@@ -348,6 +378,27 @@ public class ReportDetailsActivity extends AppCompatActivity {
         }
     }
 
+
+    private String formatWasteType(String wasteType) {
+        if (wasteType == null
+                || wasteType.trim().isEmpty()
+                || wasteType.equalsIgnoreCase("Not specified")) {
+            return "Plastic type not provided";
+        }
+        return wasteType;
+    }
+
+    private String formatWeight(double weight) {
+        if (weight <= 0) {
+            return "Weight not provided";
+        }
+        return String.format(
+                Locale.getDefault(),
+                "%.2f kg",
+                weight
+        );
+    }
+
     private String safeText(String value, String fallback) {
         return value == null || value.trim().isEmpty()
                 ? fallback
@@ -397,6 +448,24 @@ public class ReportDetailsActivity extends AppCompatActivity {
         );
     }
 
+
+    private void showLoadError(String message) {
+        setLoading(false);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Report could not be loaded")
+                .setMessage(message)
+                .setNegativeButton(
+                        "Close",
+                        (dialog, which) -> finish()
+                )
+                .setPositiveButton(
+                        "Try Again",
+                        (dialog, which) -> loadReportDetails()
+                )
+                .show();
+    }
+
     private void redirectToLogin() {
         sessionManager.logout();
         Intent intent = new Intent(this, LoginActivity.class);
@@ -408,5 +477,14 @@ public class ReportDetailsActivity extends AppCompatActivity {
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (detailsCall != null) {
+            detailsCall.cancel();
+            detailsCall = null;
+        }
+        super.onDestroy();
     }
 }

@@ -1,162 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawerLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#000000">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000000">
 
         <ImageButton
-            android:id="@+id/menuButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="16dp"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_menu_sort_by_size"
-            android:contentDescription="Menu"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:tint="#FFFFFF"/>
+                android:id="@+id/menuButton"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="14dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Open menu"
+                android:padding="6dp"
+                android:src="@android:drawable/ic_menu_sort_by_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#FFFFFF" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profileImage"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="Profile picture"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_default_profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/EcoPrintProfileCircle"
+                app:strokeColor="#7CFF5B"
+                app:strokeWidth="1.5dp" />
 
         <TextView
-            android:id="@+id/titleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dashboard"
-            android:textColor="#7CFF5B"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="72dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+                android:id="@+id/welcomeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                android:text="Welcome back, there 🌱"
+                android:textColor="#7CFF5B"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/menuButton" />
 
         <TextView
-            android:id="@+id/welcomeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Welcome Back 🌱"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp"
-            android:layout_marginStart="72dp"
-            app:layout_constraintTop_toBottomOf="@id/titleText"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <!-- Reports Card -->
-        <LinearLayout
-            android:id="@+id/reportsCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:background="@drawable/news_card_background"
-            android:layout_marginTop="40dp"
-            android:layout_marginHorizontal="20dp"
-            app:layout_constraintTop_toBottomOf="@id/welcomeText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground">
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/impactSubtitleText"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="♻ Reports Submitted"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"/>
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:text="Here’s your environmental impact"
+                android:textColor="#A5A5A5"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/welcomeText" />
 
-            <TextView
-                    android:id="@+id/reportsCountText"
-                    android:layout_width="wrap_content"
+        <ScrollView
+                android:id="@+id/homeScrollView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:fillViewport="true"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/impactSubtitleText">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="#7CFF5B"
-                    android:textSize="32sp"
-                    android:textStyle="bold"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Tap to view and track →"
-                    android:textColor="#AAAAAA"
-                    android:textSize="12sp" />
-        </LinearLayout>
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingTop="22dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="30dp">
 
-        <!-- Waste Card -->
-        <LinearLayout
-            android:id="@+id/wasteCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:background="@drawable/news_card_background"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="20dp"
-            app:layout_constraintTop_toBottomOf="@id/reportsCard"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+                <LinearLayout
+                        android:id="@+id/reportActionCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/report_cta_background"
+                        android:clickable="true"
+                        android:elevation="3dp"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🌍 Waste Reported"
-                android:textColor="#FFFFFF"/>
+                    <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Want to submit a report?"
+                            android:textColor="#FFFFFF"
+                            android:textSize="21sp"
+                            android:textStyle="bold" />
 
-            <TextView
-                    android:id="@+id/wasteWeightText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0 KG"
-                    android:textColor="#7CFF5B"
-                    android:textSize="32sp"
-                    android:textStyle="bold" />
-        </LinearLayout>
+                    <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="7dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Found plastic waste nearby? Report it and help keep your surroundings clean."
+                            android:textColor="#B9C7B5"
+                            android:textSize="13sp" />
 
-        <!-- Points Card -->
-        <LinearLayout
-            android:id="@+id/pointsCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:background="@drawable/news_card_background"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="20dp"
-            app:layout_constraintTop_toBottomOf="@id/wasteCard"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+                    <Button
+                            android:id="@+id/reportWasteButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:layout_marginTop="16dp"
+                            android:backgroundTint="#66CC33"
+                            android:text="REPORT WASTE"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🏆 Eco Points"
-                android:textColor="#FFFFFF"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="Your impact"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-            <TextView
-                    android:id="@+id/pointsCountText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="#7CFF5B"
-                    android:textSize="32sp"
-                    android:textStyle="bold" />
-        </LinearLayout>
+                <LinearLayout
+                        android:id="@+id/reportsCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/news_card_background"
+                        android:clickable="true"
+                        android:elevation="2dp"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="vertical"
+                        android:padding="19dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="♻ Reports Submitted"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
+
+                    <TextView
+                            android:id="@+id/reportsCountText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="0"
+                            android:textColor="#7CFF5B"
+                            android:textSize="34sp"
+                            android:textStyle="bold" />
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="Tap to view and track →"
+                            android:textColor="#AAAAAA"
+                            android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:id="@+id/wasteCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:background="@drawable/news_card_background"
+                        android:orientation="vertical"
+                        android:padding="19dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🌍 Waste Reported"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
+
+                    <TextView
+                            android:id="@+id/wasteWeightText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="0 KG"
+                            android:textColor="#7CFF5B"
+                            android:textSize="34sp"
+                            android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:id="@+id/pointsCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:background="@drawable/news_card_background"
+                        android:orientation="vertical"
+                        android:padding="19dp">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🏆 Eco Points"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
+
+                    <TextView
+                            android:id="@+id/pointsCountText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="0"
+                            android:textColor="#7CFF5B"
+                            android:textSize="34sp"
+                            android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_width="280dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="#111111"
-        app:itemTextColor="#FFFFFF"
-        app:menu="@menu/sidebar_menu"/>
+            android:id="@+id/navigationView"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="#111111"
+            app:itemTextColor="#FFFFFF"
+            app:menu="@menu/sidebar_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

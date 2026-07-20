@@ -3,7 +3,6 @@ package com.example.eco_print;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +19,8 @@ import com.example.eco_print.models.WasteReport;
 import com.example.eco_print.utils.SessionManager;
 import com.example.eco_print.utils.SupabaseClient;
 import com.example.eco_print.utils.SupabaseConfig;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
 
@@ -27,8 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CollectorHomeActivity
-        extends AppCompatActivity {
+public class CollectorHomeActivity extends AppCompatActivity {
 
     private TextView greetingText;
     private TextView availableCountText;
@@ -36,56 +36,41 @@ public class CollectorHomeActivity
     private TextView emptyStateText;
     private ProgressBar loadingProgress;
     private RecyclerView reportsRecyclerView;
-    private Button logoutButton;
+    private ShapeableImageView profileImage;
+    private View stateContainer;
+    private MaterialButton retryButton;
 
     private SessionManager sessionManager;
     private CollectorReportAdapter adapter;
 
+    private Call<List<WasteReport>> availableReportsCall;
+    private Call<List<WasteReport>> acceptedReportsCall;
+    private Call<List<WasteReport>> acceptReportCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(
-                R.layout.activity_collector_home
-        );
+        setContentView(R.layout.activity_collector_home);
 
-        greetingText =
-                findViewById(R.id.greetingText);
+        greetingText = findViewById(R.id.greetingText);
+        availableCountText = findViewById(R.id.availableCountText);
+        acceptedCountText = findViewById(R.id.acceptedCountText);
+        emptyStateText = findViewById(R.id.emptyStateText);
+        loadingProgress = findViewById(R.id.loadingProgress);
+        reportsRecyclerView = findViewById(R.id.reportsRecyclerView);
+        profileImage = findViewById(R.id.profileImage);
+        stateContainer = findViewById(R.id.stateContainer);
+        retryButton = findViewById(R.id.retryButton);
 
-        availableCountText =
-                findViewById(R.id.availableCountText);
-
-        acceptedCountText =
-                findViewById(R.id.acceptedCountText);
-
-        emptyStateText =
-                findViewById(R.id.emptyStateText);
-
-        loadingProgress =
-                findViewById(R.id.loadingProgress);
-
-        reportsRecyclerView =
-                findViewById(R.id.reportsRecyclerView);
-
-        logoutButton =
-                findViewById(R.id.logoutButton);
-
-        sessionManager =
-                new SessionManager(this);
+        sessionManager = new SessionManager(this);
 
         if (!sessionManager.isCollector()) {
-            startActivity(
-                    new Intent(
-                            this,
-                            HomeActivity.class
-                    )
-            );
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
             return;
         }
 
-        String collectorName =
-                sessionManager.getUserName();
-
+        String collectorName = sessionManager.getUserName();
         greetingText.setText(
                 collectorName.isEmpty()
                         ? "Ready for collection?"
@@ -99,49 +84,71 @@ public class CollectorHomeActivity
         reportsRecyclerView.setLayoutManager(
                 new LinearLayoutManager(this)
         );
-
         reportsRecyclerView.setAdapter(adapter);
         reportsRecyclerView.setHasFixedSize(true);
+        reportsRecyclerView.setItemAnimator(null);
 
-        logoutButton.setOnClickListener(v -> logout());
+        profileImage.setOnClickListener(v -> showProfileMenu());
+        retryButton.setOnClickListener(v -> loadCollectorDashboard());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (sessionManager != null
-                && sessionManager.isCollector()) {
+        if (sessionManager != null && sessionManager.isCollector()) {
             loadCollectorDashboard();
         }
     }
 
     private void loadCollectorDashboard() {
+        if (!sessionManager.isLoggedIn()) {
+            logout();
+            return;
+        }
+
+        if (!SupabaseConfig.isConfigured()) {
+            showErrorState(
+                    "Supabase is not configured. Add the anon key and try again."
+            );
+            return;
+        }
+
         loadAvailableReports();
         loadAcceptedCount();
     }
 
     private void loadAvailableReports() {
+        if (availableReportsCall != null) {
+            availableReportsCall.cancel();
+        }
+
         showLoading(true);
 
-        WasteReportApi api =
-                SupabaseClient.getClient()
-                        .create(WasteReportApi.class);
+        WasteReportApi api = SupabaseClient.getClient()
+                .create(WasteReportApi.class);
 
-        api.getAvailableReports(
+        availableReportsCall = api.getAvailableReports(
                 SupabaseConfig.SUPABASE_ANON_KEY,
                 sessionManager.getAuthorizationHeader(),
                 "eq.Pending",
                 "is.null",
                 "*",
                 "created_at.desc"
-        ).enqueue(new Callback<List<WasteReport>>() {
+        );
 
+        availableReportsCall.enqueue(new Callback<List<WasteReport>>() {
             @Override
             public void onResponse(
                     Call<List<WasteReport>> call,
                     Response<List<WasteReport>> response
             ) {
+                availableReportsCall = null;
+
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+
                 showLoading(false);
 
                 if (response.code() == 401) {
@@ -150,26 +157,22 @@ public class CollectorHomeActivity
                     return;
                 }
 
-                if (!response.isSuccessful()
-                        || response.body() == null) {
-                    showToast(
-                            "Unable to load reports. Error code: "
-                                    + response.code()
+                if (!response.isSuccessful() || response.body() == null) {
+                    showErrorState(
+                            "Available reports could not be loaded. Tap Try Again."
                     );
-                    showEmptyState(true);
                     return;
                 }
 
-                List<WasteReport> reports =
-                        response.body();
-
+                List<WasteReport> reports = response.body();
                 adapter.setReports(reports);
+                availableCountText.setText(String.valueOf(reports.size()));
 
-                availableCountText.setText(
-                        String.valueOf(reports.size())
-                );
-
-                showEmptyState(reports.isEmpty());
+                if (reports.isEmpty()) {
+                    showEmptyState();
+                } else {
+                    showReports();
+                }
             }
 
             @Override
@@ -177,41 +180,53 @@ public class CollectorHomeActivity
                     Call<List<WasteReport>> call,
                     Throwable throwable
             ) {
-                showLoading(false);
-                showEmptyState(true);
+                availableReportsCall = null;
 
-                showToast(
-                        "Unable to load reports: "
-                                + throwable.getMessage()
+                if (call.isCanceled()
+                        || isFinishing()
+                        || isDestroyed()) {
+                    return;
+                }
+
+                showLoading(false);
+                showErrorState(
+                        "Could not connect to the server. Check your internet and try again."
                 );
             }
         });
     }
 
     private void loadAcceptedCount() {
-        WasteReportApi api =
-                SupabaseClient.getClient()
-                        .create(WasteReportApi.class);
+        if (acceptedReportsCall != null) {
+            acceptedReportsCall.cancel();
+        }
 
-        api.getAcceptedReports(
+        WasteReportApi api = SupabaseClient.getClient()
+                .create(WasteReportApi.class);
+
+        acceptedReportsCall = api.getAcceptedReports(
                 SupabaseConfig.SUPABASE_ANON_KEY,
                 sessionManager.getAuthorizationHeader(),
                 "eq." + sessionManager.getUserId(),
                 "id",
                 "created_at.desc"
-        ).enqueue(new Callback<List<WasteReport>>() {
+        );
 
+        acceptedReportsCall.enqueue(new Callback<List<WasteReport>>() {
             @Override
             public void onResponse(
                     Call<List<WasteReport>> call,
                     Response<List<WasteReport>> response
             ) {
-                if (response.isSuccessful()
-                        && response.body() != null) {
+                acceptedReportsCall = null;
+
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+
+                if (response.isSuccessful() && response.body() != null) {
                     acceptedCountText.setText(
-                            String.valueOf(
-                                    response.body().size()
-                            )
+                            String.valueOf(response.body().size())
                     );
                 }
             }
@@ -221,20 +236,17 @@ public class CollectorHomeActivity
                     Call<List<WasteReport>> call,
                     Throwable throwable
             ) {
-                // Available reports remain usable even if this count fails.
+                acceptedReportsCall = null;
+                // Available reports remain usable if this count fails.
             }
         });
     }
 
-    private void showAcceptConfirmation(
-            WasteReport report
-    ) {
+    private void showAcceptConfirmation(WasteReport report) {
         new AlertDialog.Builder(this)
                 .setTitle("Accept Collection?")
                 .setMessage(
-                        "You will become responsible for collecting this "
-                                + "waste report. The citizen will immediately "
-                                + "see the status as Assigned."
+                        "You will become responsible for collecting this waste report. The citizen will immediately see the status as Assigned."
                 )
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton(
@@ -251,24 +263,33 @@ public class CollectorHomeActivity
             return;
         }
 
+        if (acceptReportCall != null) {
+            return;
+        }
+
         adapter.setAcceptingReportId(report.getId());
 
-        WasteReportApi api =
-                SupabaseClient.getClient()
-                        .create(WasteReportApi.class);
+        WasteReportApi api = SupabaseClient.getClient()
+                .create(WasteReportApi.class);
 
-        api.acceptWasteReport(
+        acceptReportCall = api.acceptWasteReport(
                 SupabaseConfig.SUPABASE_ANON_KEY,
                 sessionManager.getAuthorizationHeader(),
                 new AcceptReportRequest(report.getId())
-        ).enqueue(new Callback<List<WasteReport>>() {
+        );
 
+        acceptReportCall.enqueue(new Callback<List<WasteReport>>() {
             @Override
             public void onResponse(
                     Call<List<WasteReport>> call,
                     Response<List<WasteReport>> response
             ) {
+                acceptReportCall = null;
                 adapter.setAcceptingReportId("");
+
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
 
                 if (response.code() == 401) {
                     showToast("Your session expired");
@@ -277,8 +298,9 @@ public class CollectorHomeActivity
                 }
 
                 if (!response.isSuccessful()) {
-                    showToast(
-                            "Could not accept report. Error code: "
+                    showAcceptError(
+                            report,
+                            "The report could not be accepted. Error "
                                     + response.code()
                     );
                     return;
@@ -302,14 +324,36 @@ public class CollectorHomeActivity
                     Call<List<WasteReport>> call,
                     Throwable throwable
             ) {
+                acceptReportCall = null;
                 adapter.setAcceptingReportId("");
 
-                showToast(
-                        "Accept failed: "
-                                + throwable.getMessage()
+                if (call.isCanceled()
+                        || isFinishing()
+                        || isDestroyed()) {
+                    return;
+                }
+
+                showAcceptError(
+                        report,
+                        "Check your internet connection and try again."
                 );
             }
         });
+    }
+
+    private void showAcceptError(
+            WasteReport report,
+            String message
+    ) {
+        new AlertDialog.Builder(this)
+                .setTitle("Collection not accepted")
+                .setMessage(message)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton(
+                        "Try Again",
+                        (dialog, which) -> acceptReport(report)
+                )
+                .show();
     }
 
     private void showLoading(boolean loading) {
@@ -319,42 +363,82 @@ public class CollectorHomeActivity
 
         if (loading) {
             reportsRecyclerView.setVisibility(View.GONE);
-            emptyStateText.setVisibility(View.GONE);
+            stateContainer.setVisibility(View.GONE);
         }
     }
 
-    private void showEmptyState(boolean empty) {
-        emptyStateText.setVisibility(
-                empty ? View.VISIBLE : View.GONE
-        );
+    private void showReports() {
+        loadingProgress.setVisibility(View.GONE);
+        stateContainer.setVisibility(View.GONE);
+        reportsRecyclerView.setVisibility(View.VISIBLE);
+    }
 
-        reportsRecyclerView.setVisibility(
-                empty ? View.GONE : View.VISIBLE
+    private void showEmptyState() {
+        loadingProgress.setVisibility(View.GONE);
+        reportsRecyclerView.setVisibility(View.GONE);
+        stateContainer.setVisibility(View.VISIBLE);
+        retryButton.setVisibility(View.GONE);
+        emptyStateText.setText(
+                "No available reports right now.\n\nNew Pending citizen reports will appear here."
         );
+    }
+
+    private void showErrorState(String message) {
+        loadingProgress.setVisibility(View.GONE);
+        reportsRecyclerView.setVisibility(View.GONE);
+        stateContainer.setVisibility(View.VISIBLE);
+        retryButton.setVisibility(View.VISIBLE);
+        emptyStateText.setText(message);
+    }
+
+    private void showProfileMenu() {
+        String name = sessionManager.getUserName();
+        String displayName = name.isEmpty() ? "Collector" : name;
+
+        new AlertDialog.Builder(this)
+                .setTitle(displayName)
+                .setMessage(
+                        sessionManager.getUserEmail()
+                                + "\n\nRole: Collector"
+                )
+                .setNegativeButton("Close", null)
+                .setPositiveButton(
+                        "Logout",
+                        (dialog, which) -> logout()
+                )
+                .show();
     }
 
     private void logout() {
         sessionManager.logout();
 
-        Intent intent = new Intent(
-                this,
-                WelcomeActivity.class
-        );
-
+        Intent intent = new Intent(this, WelcomeActivity.class);
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK
         );
-
         startActivity(intent);
         finish();
     }
 
     private void showToast(String message) {
-        Toast.makeText(
-                this,
-                message,
-                Toast.LENGTH_LONG
-        ).show();
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (availableReportsCall != null) {
+            availableReportsCall.cancel();
+            availableReportsCall = null;
+        }
+        if (acceptedReportsCall != null) {
+            acceptedReportsCall.cancel();
+            acceptedReportsCall = null;
+        }
+        if (acceptReportCall != null) {
+            acceptReportCall.cancel();
+            acceptReportCall = null;
+        }
+        super.onDestroy();
     }
 }

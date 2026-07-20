@@ -44,6 +44,7 @@ public interface WasteReportApi {
     Call<List<WasteReport>> getMyWasteReports(
             @Header("apikey") String apiKey,
             @Header("Authorization") String authorization,
+            @Query("user_id") String userFilter,
             @Query("select") String select,
             @Query("order") String order
     );

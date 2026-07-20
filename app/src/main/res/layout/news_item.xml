@@ -1,45 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/news_card_background"
-    android:elevation="6dp"
-    android:padding="12dp"
-    android:layout_marginBottom="16dp">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:background="@drawable/news_card_background"
+        android:clickable="true"
+        android:elevation="4dp"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:padding="12dp">
 
     <ImageView
-        android:id="@+id/newsImage"
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:scaleType="centerCrop"/>
+            android:id="@+id/newsImage"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:contentDescription="News article image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/news_image_placeholder" />
 
     <TextView
-        android:id="@+id/newsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#7CFF5B"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginTop="12dp"/>
+            android:id="@+id/newsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="Environmental update"
+            android:textColor="#7CFF5B"
+            android:textSize="19sp"
+            android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/newsDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:layout_marginTop="8dp"/>
+            android:id="@+id/newsDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="2dp"
+            android:maxLines="3"
+            android:text="Article description"
+            android:textColor="#E2E2E2"
+            android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/readMore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Read More →"
-        android:textColor="#7CFF5B"
-        android:textStyle="bold"
-        android:textSize="14sp"
-        android:layout_marginTop="12dp"/>
+            android:id="@+id/readMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="Read More →"
+            android:textColor="#7CFF5B"
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
 </LinearLayout>
