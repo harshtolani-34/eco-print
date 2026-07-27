@@ -16,8 +16,8 @@
             android:textColor="#7CFF5B"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/profileImage"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -30,11 +30,11 @@
             android:padding="2dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_default_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/EcoPrintProfileCircle"
             app:strokeColor="#7CFF5B"
-            app:strokeWidth="1.5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:strokeWidth="1.5dp" />
 
     <TextView
             android:id="@+id/greetingText"
@@ -55,7 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="18dp"
             android:layout_marginEnd="16dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -63,10 +63,14 @@
             app:layout_constraintTop_toBottomOf="@id/greetingText">
 
         <LinearLayout
+                android:id="@+id/availableSummaryCard"
                 android:layout_width="0dp"
-                android:layout_height="110dp"
+                android:layout_height="98dp"
                 android:layout_weight="1"
                 android:background="@drawable/collector_summary_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:padding="16dp">
@@ -83,10 +87,10 @@
                     android:id="@+id/availableCountText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="5dp"
                     android:text="0"
                     android:textColor="#7CFF5B"
-                    android:textSize="32sp"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
         </LinearLayout>
 
@@ -95,10 +99,14 @@
                 android:layout_height="1dp" />
 
         <LinearLayout
+                android:id="@+id/acceptedSummaryCard"
                 android:layout_width="0dp"
-                android:layout_height="110dp"
+                android:layout_height="98dp"
                 android:layout_weight="1"
                 android:background="@drawable/collector_summary_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:padding="16dp">
@@ -106,7 +114,7 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ACCEPTED BY YOU"
+                    android:text="MY COLLECTIONS"
                     android:textColor="#AAAAAA"
                     android:textSize="11sp"
                     android:textStyle="bold" />
@@ -115,29 +123,65 @@
                     android:id="@+id/acceptedCountText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="5dp"
                     android:text="0"
                     android:textColor="#7CFF5B"
-                    android:textSize="32sp"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 
+    <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/sectionToggleGroup"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="16dp"
+            app:checkedButton="@id/availableTabButton"
+            app:selectionRequired="true"
+            app:singleSelection="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/summaryRow">
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/availableTabButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="AVAILABLE"
+                android:textStyle="bold"
+                app:cornerRadius="14dp" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/myCollectionsTabButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="MY COLLECTIONS"
+                android:textStyle="bold"
+                app:cornerRadius="14dp" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
     <TextView
-            android:id="@+id/availableTitle"
+            android:id="@+id/sectionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="18dp"
             android:text="Available Waste Reports"
             android:textColor="#FFFFFF"
             android:textSize="19sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/summaryRow" />
+            app:layout_constraintTop_toBottomOf="@id/sectionToggleGroup" />
 
     <TextView
-            android:id="@+id/availableSubtitle"
+            android:id="@+id/sectionSubtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
@@ -148,7 +192,7 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/availableTitle" />
+            app:layout_constraintTop_toBottomOf="@id/sectionTitle" />
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reportsRecyclerView"
@@ -162,7 +206,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/availableSubtitle" />
+            app:layout_constraintTop_toBottomOf="@id/sectionSubtitle" />
 
     <ProgressBar
             android:id="@+id/loadingProgress"
@@ -173,7 +217,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/availableSubtitle" />
+            app:layout_constraintTop_toBottomOf="@id/sectionSubtitle" />
 
     <LinearLayout
             android:id="@+id/stateContainer"
@@ -185,7 +229,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/availableSubtitle">
+            app:layout_constraintTop_toBottomOf="@id/sectionSubtitle">
 
         <TextView
                 android:id="@+id/emptyStateText"
@@ -193,7 +237,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:lineSpacingExtra="4dp"
-                android:text="No available reports right now.\n\nNew Pending citizen reports will appear here."
+                android:text="No available reports right now."
                 android:textColor="#999999"
                 android:textSize="15sp" />
 

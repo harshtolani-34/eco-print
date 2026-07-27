@@ -9,10 +9,7 @@ public final class SupabaseConfig {
     public static final String SUPABASE_URL =
             "https://mgjikkjowdugemmmwjpz.supabase.co/";
 
-    /**
-     * Paste the project's Supabase anon key here in the local project.
-     * Do not commit service-role keys to an Android application.
-     */
+
     public static final String SUPABASE_ANON_KEY = "";
 
     public static final String WASTE_IMAGE_BUCKET =

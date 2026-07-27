@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="module4_back">Back</string>
+    <string name="module4_collection_details">Collection Details</string>
+    <string name="module4_waste_report_image">Waste report image</string>
+    <string name="module4_assigned_report_image">Assigned waste report image</string>
+    <string name="module4_status_assigned">Assigned</string>
+    <string name="module4_report_id">Report ID</string>
+    <string name="module4_waste_information">WASTE INFORMATION</string>
+    <string name="module4_plastic_type">Plastic type</string>
+    <string name="module4_weight">Weight</string>
+    <string name="module4_description">Description</string>
+    <string name="module4_waste_location">Waste Location</string>
+    <string name="module4_address">Address</string>
+    <string name="module4_latitude_longitude">Latitude / Longitude</string>
+    <string name="module4_map_description">OpenStreetMap showing the waste location</string>
+    <string name="module4_osm_attribution">© OpenStreetMap contributors</string>
+    <string name="module4_open_in_osm">OPEN IN OPENSTREETMAP</string>
+    <string name="module4_collection_timeline">COLLECTION TIMELINE</string>
+    <string name="module4_assigned_placeholder">Assigned: —</string>
+    <string name="module4_started_placeholder">Started: —</string>
+    <string name="module4_collected_placeholder">Collected: —</string>
+    <string name="module4_collection_completed">Collection completed successfully.</string>
+    <string name="module4_start_collection">START COLLECTION</string>
+    <string name="module4_assignment_date_placeholder">10 Jul 2026</string>
+    <string name="module4_plastic_type_placeholder">PET Bottles</string>
+    <string name="module4_weight_placeholder">2.50 kg</string>
+    <string name="module4_address_placeholder">Mira Road, Maharashtra</string>
+    <string name="module4_view_collection">VIEW COLLECTION</string>
+</resources>

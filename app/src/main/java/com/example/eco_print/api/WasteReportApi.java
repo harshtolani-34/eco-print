@@ -2,6 +2,7 @@ package com.example.eco_print.api;
 
 import com.example.eco_print.models.AcceptReportRequest;
 import com.example.eco_print.models.StorageUploadResponse;
+import com.example.eco_print.models.UpdateCollectionStatusRequest;
 import com.example.eco_print.models.WasteReport;
 
 import java.util.List;
@@ -85,5 +86,16 @@ public interface WasteReportApi {
             @Header("apikey") String apiKey,
             @Header("Authorization") String authorization,
             @Body AcceptReportRequest request
+    );
+
+    @Headers({
+            "Content-Type: application/json",
+            "Prefer: return=representation"
+    })
+    @POST("rest/v1/rpc/update_collection_status")
+    Call<List<WasteReport>> updateCollectionStatus(
+            @Header("apikey") String apiKey,
+            @Header("Authorization") String authorization,
+            @Body UpdateCollectionStatusRequest request
     );
 }

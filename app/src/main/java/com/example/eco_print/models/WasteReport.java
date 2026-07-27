@@ -33,6 +33,9 @@ public class WasteReport {
     @SerializedName("assigned_at")
     private String assignedAt;
 
+    @SerializedName("started_at")
+    private String startedAt;
+
     @SerializedName("collected_at")
     private String collectedAt;
 
@@ -108,6 +111,10 @@ public class WasteReport {
 
     public String getAssignedAt() {
         return assignedAt;
+    }
+
+    public String getStartedAt() {
+        return startedAt;
     }
 
     public String getCollectedAt() {
