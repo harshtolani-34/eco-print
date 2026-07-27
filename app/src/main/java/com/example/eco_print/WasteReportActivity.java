@@ -312,8 +312,7 @@ public class WasteReportActivity extends AppCompatActivity {
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
             );
         } catch (SecurityException ignored) {
-            // Some document providers only grant access for the current app
-            // session. The image can still be used immediately.
+
         }
     }
 
@@ -677,7 +676,7 @@ public class WasteReportActivity extends AppCompatActivity {
                             1
                     );
                 } catch (Exception ignored) {
-                    // Coordinates remain available even if geocoding fails.
+
                 }
 
                 List<Address> finalAddresses = addresses;

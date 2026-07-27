@@ -1,12 +1,6 @@
 package com.example.eco_print.utils;
 
-/**
- * Contains the form rules for a waste report.
- *
- * Keeping these rules outside the Activity makes them easier to test and
- * prevents slightly different validation rules from appearing in different
- * parts of the app.
- */
+
 public final class WasteReportValidator {
 
     public enum Field {
