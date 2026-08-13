@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
             android:allowBackup="true"
@@ -43,6 +44,13 @@
 
         <activity
                 android:name=".AdminLoginActivity"
+                android:exported="false" />
+        <activity
+                android:name=".RewardHistoryActivity"
+                android:exported="false" />
+
+        <activity
+                android:name=".NotificationActivity"
                 android:exported="false" />
 
         <provider
@@ -108,6 +116,8 @@
 
 
 
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -115,6 +125,15 @@
 
         </activity>
 
+        <service
+                android:name=".EcoPrintMessagingService"
+                android:exported="false">
+
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+
+        </service>
     </application>
 
 </manifest>

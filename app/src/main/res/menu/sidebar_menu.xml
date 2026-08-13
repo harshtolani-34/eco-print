@@ -19,6 +19,11 @@
         android:title="Profile" />
 
     <item
+            android:id="@+id/nav_notifications"
+            android:icon="@android:drawable/ic_dialog_email"
+            android:title="Notifications" />
+
+    <item
         android:id="@+id/nav_logout"
         android:title="Logout" />
 

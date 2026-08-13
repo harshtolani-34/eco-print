@@ -122,12 +122,19 @@ public class NewsActivity extends AppCompatActivity {
                 finish();
             } else if (id == R.id.nav_news) {
                 drawerLayout.closeDrawers();
-            } else if (id == R.id.nav_report) {
-                startActivity(new Intent(
-                        NewsActivity.this,
-                        WasteReportActivity.class
-                ));
+            } else if (id == R.id.nav_notifications) {
+
+                startActivity(
+                        new Intent(
+                                NewsActivity.this,
+                                NotificationActivity.class
+                        )
+                );
+
+                finish();
+
             } else if (id == R.id.nav_logout) {
+
                 logoutUser();
             }
 

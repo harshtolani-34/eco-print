@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/news_card_background"
+        android:orientation="vertical"
+        android:padding="18dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/titleText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Report Verified"
+                android:textColor="#7CFF5B"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        <TextView
+                android:id="@+id/unreadBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/report_badge_background"
+                android:paddingStart="10dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="4dp"
+                android:text="NEW"
+                android:textColor="#7CFF5B"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/typeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="REPORT VERIFIED"
+            android:textColor="#888888"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+    <TextView
+            android:id="@+id/messageText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:lineSpacingExtra="3dp"
+            android:text="Your plastic waste report has been verified."
+            android:textColor="#DDDDDD"
+            android:textSize="14sp" />
+
+    <TextView
+            android:id="@+id/dateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="13 Aug 2026, 08:30 PM"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp" />
+
+</LinearLayout>

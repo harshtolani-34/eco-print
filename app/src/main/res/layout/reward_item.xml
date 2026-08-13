@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/news_card_background"
+        android:orientation="vertical"
+        android:padding="18dp">
+
+    <TextView
+            android:id="@+id/pointsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+50 ECO POINTS"
+            android:textColor="#7CFF5B"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+    <TextView
+            android:id="@+id/rewardTypeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="COLLECTION COMPLETED"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+    <TextView
+            android:id="@+id/descriptionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:lineSpacingExtra="2dp"
+            android:text="Plastic waste successfully collected"
+            android:textColor="#DDDDDD"
+            android:textSize="15sp" />
+
+    <TextView
+            android:id="@+id/reportText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Report:"
+            android:textColor="#888888"
+            android:textSize="11sp" />
+
+    <TextView
+            android:id="@+id/dateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="13 Aug 2026, 08:00 PM"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp" />
+
+</LinearLayout>
