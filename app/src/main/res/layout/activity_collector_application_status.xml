@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:fillViewport="true">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="48dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="32dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Collector Application"
+                android:textColor="#7CFF5B"
+                android:textSize="27sp"
+                android:textStyle="bold" />
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Administrator verification is required before collector access is enabled."
+                android:textColor="#999999"
+                android:textSize="14sp" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/report_section_background"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="22dp">
+
+            <TextView
+                    android:id="@+id/nameText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Collector applicant"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            <TextView
+                    android:id="@+id/emailText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:textColor="#AAAAAA"
+                    android:textSize="13sp" />
+
+            <TextView
+                    android:id="@+id/statusText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:paddingStart="15dp"
+                    android:paddingTop="7dp"
+                    android:paddingEnd="15dp"
+                    android:paddingBottom="7dp"
+                    android:text="PENDING"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+            <TextView
+                    android:id="@+id/explanationText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="3dp"
+                    android:textColor="#CCCCCC"
+                    android:textSize="14sp" />
+
+            <TextView
+                    android:id="@+id/rejectionReasonText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/rejected_notice_background"
+                    android:lineSpacingExtra="3dp"
+                    android:padding="15dp"
+                    android:textColor="#FFB0B0"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+        </LinearLayout>
+
+        <ProgressBar
+                android:id="@+id/loadingProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/continueButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#66CC33"
+                android:text="OPEN COLLECTOR DASHBOARD"
+                android:textColor="#071200"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/refreshButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="14dp"
+                android:backgroundTint="#1A1A1A"
+                android:text="REFRESH STATUS"
+                android:textColor="#7CFF5B"
+                android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="14dp"
+                android:backgroundTint="#2A1010"
+                android:text="LOGOUT"
+                android:textColor="#FF7777"
+                android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>

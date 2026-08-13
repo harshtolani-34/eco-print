@@ -3,6 +3,8 @@ package com.example.eco_print.utils;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.example.eco_print.AdminDashboardActivity;
+import com.example.eco_print.CollectorApplicationStatusActivity;
 import com.example.eco_print.CollectorHomeActivity;
 import com.example.eco_print.HomeActivity;
 
@@ -16,15 +18,19 @@ public final class RoleNavigator {
             Activity activity,
             SessionManager sessionManager
     ) {
-        Class<?> destination = sessionManager.isCollector()
-                ? CollectorHomeActivity.class
-                : HomeActivity.class;
+        Class<?> destination;
 
-        Intent intent = new Intent(
-                activity,
-                destination
-        );
+        if (sessionManager.isAdmin()) {
+            destination = AdminDashboardActivity.class;
+        } else if (sessionManager.isApprovedCollector()) {
+            destination = CollectorHomeActivity.class;
+        } else if (sessionManager.isCollector()) {
+            destination = CollectorApplicationStatusActivity.class;
+        } else {
+            destination = HomeActivity.class;
+        }
 
+        Intent intent = new Intent(activity, destination);
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK

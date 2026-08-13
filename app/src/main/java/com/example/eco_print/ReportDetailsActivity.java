@@ -251,6 +251,14 @@ public class ReportDetailsActivity extends AppCompatActivity {
         ));
         reportIdText.setText(safeText(report.getId(), reportId));
 
+        if ("Rejected".equalsIgnoreCase(status)) {
+            String reason = safeText(
+                    report.getRejectionReason(),
+                    "The administrator found that this report needs corrected information or a clearer photograph."
+            );
+            rejectedNotice.setText("Rejection reason: " + reason);
+        }
+
         applyStatusStyle(statusText, status);
         updateStatusTracker(status);
     }

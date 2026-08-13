@@ -19,6 +19,15 @@ public class UserProfile {
     @SerializedName("collector_status")
     private String collectorStatus;
 
+    @SerializedName("collector_rejection_reason")
+    private String collectorRejectionReason;
+
+    @SerializedName("collector_reviewed_by")
+    private String collectorReviewedBy;
+
+    @SerializedName("collector_reviewed_at")
+    private String collectorReviewedAt;
+
     @SerializedName("created_at")
     private String createdAt;
 
@@ -51,6 +60,18 @@ public class UserProfile {
 
     public String getCollectorStatus() {
         return collectorStatus;
+    }
+
+    public String getCollectorRejectionReason() {
+        return collectorRejectionReason;
+    }
+
+    public String getCollectorReviewedBy() {
+        return collectorReviewedBy;
+    }
+
+    public String getCollectorReviewedAt() {
+        return collectorReviewedAt;
     }
 
     public String getCreatedAt() {

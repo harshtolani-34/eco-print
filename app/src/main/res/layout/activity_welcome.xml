@@ -1,90 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000000">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000">
 
     <!-- EcoPrint Title -->
     <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="EcoPrint"
-        android:textColor="#7CFF5B"
-        android:textSize="38sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="90dp"
-        android:letterSpacing="0.08"/>
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EcoPrint"
+            android:textColor="#7CFF5B"
+            android:textSize="38sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="90dp"
+            android:letterSpacing="0.08"/>
 
     <!-- Slogan -->
     <TextView
-        android:id="@+id/sloganText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Protecting Tomorrow,\nOne Report at a Time."
-        android:textColor="#FFFFFF"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/titleText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+            android:id="@+id/sloganText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Protecting Tomorrow,\nOne Report at a Time."
+            android:textColor="#FFFFFF"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/titleText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
 
     <!-- Login Button -->
     <Button
-        android:id="@+id/loginButton"
-        android:layout_width="280dp"
-        android:layout_height="55dp"
-        android:text="LOGIN"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#66CC33"
-        app:layout_constraintTop_toBottomOf="@id/sloganText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="50dp"/>
+            android:id="@+id/loginButton"
+            android:layout_width="280dp"
+            android:layout_height="55dp"
+            android:text="LOGIN"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#66CC33"
+            app:layout_constraintTop_toBottomOf="@id/sloganText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="50dp"/>
 
     <!-- OR -->
     <TextView
-        android:id="@+id/orText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OR"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="18dp"/>
+            android:id="@+id/orText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OR"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/loginButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="18dp"/>
 
     <!-- Register Button -->
     <Button
-        android:id="@+id/registerButton"
-        android:layout_width="280dp"
-        android:layout_height="55dp"
-        android:text="REGISTER"
-        android:textStyle="bold"
-        android:textColor="#66CC33"
-        android:backgroundTint="#000000"
-        app:layout_constraintTop_toBottomOf="@id/orText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="18dp"/>
+            android:id="@+id/registerButton"
+            android:layout_width="280dp"
+            android:layout_height="55dp"
+            android:text="REGISTER"
+            android:textStyle="bold"
+            android:textColor="#66CC33"
+            android:backgroundTint="#000000"
+            app:layout_constraintTop_toBottomOf="@id/orText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="18dp"/>
+
+
+    <TextView
+            android:id="@+id/adminLoginText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Administrator Login"
+            android:textColor="#A0A0A0"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/registerButton" />
 
     <!-- Earth Image -->
     <ImageView
-        android:id="@+id/earthImage"
-        android:layout_width="0dp"
-        android:layout_height="320dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/earth"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+            android:id="@+id/earthImage"
+            android:layout_width="0dp"
+            android:layout_height="320dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/earth"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

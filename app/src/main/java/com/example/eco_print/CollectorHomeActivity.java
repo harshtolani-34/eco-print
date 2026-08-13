@@ -17,6 +17,7 @@ import com.example.eco_print.adapter.CollectorReportAdapter;
 import com.example.eco_print.api.WasteReportApi;
 import com.example.eco_print.models.AcceptReportRequest;
 import com.example.eco_print.models.WasteReport;
+import com.example.eco_print.utils.RoleNavigator;
 import com.example.eco_print.utils.SessionManager;
 import com.example.eco_print.utils.SupabaseClient;
 import com.example.eco_print.utils.SupabaseConfig;
@@ -66,9 +67,8 @@ public class CollectorHomeActivity extends AppCompatActivity {
         bindViews();
         sessionManager = new SessionManager(this);
 
-        if (!sessionManager.isCollector()) {
-            startActivity(new Intent(this, HomeActivity.class));
-            finish();
+        if (!sessionManager.isApprovedCollector()) {
+            RoleNavigator.openCorrectHome(this, sessionManager);
             return;
         }
 
@@ -158,7 +158,7 @@ public class CollectorHomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (sessionManager != null && sessionManager.isCollector()) {
+        if (sessionManager != null && sessionManager.isApprovedCollector()) {
             updateGreeting();
             loadCollectorDashboard();
         }
@@ -201,7 +201,7 @@ public class CollectorHomeActivity extends AppCompatActivity {
             summaryCall = api.getAvailableReports(
                     SupabaseConfig.SUPABASE_ANON_KEY,
                     sessionManager.getAuthorizationHeader(),
-                    "eq.Pending",
+                    "eq.Verified",
                     "is.null",
                     "id",
                     "created_at.desc"
@@ -261,7 +261,7 @@ public class CollectorHomeActivity extends AppCompatActivity {
         availableReportsCall = api.getAvailableReports(
                 SupabaseConfig.SUPABASE_ANON_KEY,
                 sessionManager.getAuthorizationHeader(),
-                "eq.Pending",
+                "eq.Verified",
                 "is.null",
                 "*",
                 "created_at.desc"
@@ -299,7 +299,7 @@ public class CollectorHomeActivity extends AppCompatActivity {
                 if (reports.isEmpty()) {
                     showEmptyState(
                             "No available reports right now.\n\n"
-                                    + "New Pending citizen reports will appear here."
+                                    + "New administrator-verified reports will appear here."
                     );
                 } else {
                     showReports();

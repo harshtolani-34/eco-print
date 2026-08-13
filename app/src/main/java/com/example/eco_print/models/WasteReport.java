@@ -39,6 +39,24 @@ public class WasteReport {
     @SerializedName("collected_at")
     private String collectedAt;
 
+    @SerializedName("possible_duplicate")
+    private boolean possibleDuplicate;
+
+    @SerializedName("similar_report_id")
+    private String similarReportId;
+
+    @SerializedName("rejection_reason")
+    private String rejectionReason;
+
+    @SerializedName("verified_by")
+    private String verifiedBy;
+
+    @SerializedName("verified_at")
+    private String verifiedAt;
+
+    @SerializedName("rejected_at")
+    private String rejectedAt;
+
     public WasteReport(
             String userId,
             String imageUrl,
@@ -119,5 +137,29 @@ public class WasteReport {
 
     public String getCollectedAt() {
         return collectedAt;
+    }
+
+    public boolean isPossibleDuplicate() {
+        return possibleDuplicate;
+    }
+
+    public String getSimilarReportId() {
+        return similarReportId;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public String getVerifiedBy() {
+        return verifiedBy;
+    }
+
+    public String getVerifiedAt() {
+        return verifiedAt;
+    }
+
+    public String getRejectedAt() {
+        return rejectedAt;
     }
 }

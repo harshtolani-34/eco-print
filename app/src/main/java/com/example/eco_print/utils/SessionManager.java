@@ -104,6 +104,10 @@ public class SessionManager {
         return "collector".equalsIgnoreCase(getUserRole());
     }
 
+    public boolean isAdmin() {
+        return "admin".equalsIgnoreCase(getUserRole());
+    }
+
     public boolean isApprovedCollector() {
         return isCollector()
                 && "approved".equalsIgnoreCase(

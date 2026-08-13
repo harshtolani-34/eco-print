@@ -274,7 +274,7 @@ public class CollectorRegisterActivity
                     );
 
                     applicationManager.clear();
-                    showPrototypeApprovalDialog(sessionManager);
+                    showApplicationSubmittedDialog(sessionManager);
                     return;
                 }
 
@@ -299,21 +299,19 @@ public class CollectorRegisterActivity
         });
     }
 
-    private void showPrototypeApprovalDialog(
+    private void showApplicationSubmittedDialog(
             SessionManager sessionManager
     ) {
         new AlertDialog.Builder(this)
                 .setTitle("Application Submitted")
                 .setMessage(
                         "Your collector application has been received.\n\n"
-                                + "Prototype Mode: The application has been "
-                                + "temporarily approved so the Collector "
-                                + "module can be tested before the Admin "
-                                + "module is implemented."
+                                + "An administrator must approve it before "
+                                + "you can view or accept collection tasks."
                 )
                 .setCancelable(false)
                 .setPositiveButton(
-                        "Continue to Collector App",
+                        "VIEW APPLICATION STATUS",
                         (dialog, which) ->
                                 RoleNavigator.openCorrectHome(
                                         CollectorRegisterActivity.this,

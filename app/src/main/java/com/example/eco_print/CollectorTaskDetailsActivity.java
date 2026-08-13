@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.eco_print.api.WasteReportApi;
 import com.example.eco_print.models.UpdateCollectionStatusRequest;
 import com.example.eco_print.models.WasteReport;
+import com.example.eco_print.utils.RoleNavigator;
 import com.example.eco_print.utils.SessionManager;
 import com.example.eco_print.utils.SupabaseClient;
 import com.example.eco_print.utils.SupabaseConfig;
@@ -82,8 +83,13 @@ public class CollectorTaskDetailsActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         reportId = getIntent().getStringExtra(EXTRA_REPORT_ID);
 
-        if (!sessionManager.isLoggedIn() || !sessionManager.isCollector()) {
+        if (!sessionManager.isLoggedIn()) {
             redirectToLogin();
+            return;
+        }
+
+        if (!sessionManager.isApprovedCollector()) {
+            RoleNavigator.openCorrectHome(this, sessionManager);
             return;
         }
 

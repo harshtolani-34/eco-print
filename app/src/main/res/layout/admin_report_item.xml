@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="12dp"
+              android:background="@drawable/report_card_background"
+              android:orientation="horizontal"
+              android:padding="12dp">
+
+    <ImageView
+            android:id="@+id/reportImage"
+            android:layout_width="92dp"
+            android:layout_height="112dp"
+            android:contentDescription="Waste report image"
+            android:scaleType="centerCrop" />
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
+            <TextView android:id="@+id/statusText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingStart="10dp" android:paddingTop="4dp" android:paddingEnd="10dp" android:paddingBottom="4dp" android:text="Pending" android:textSize="11sp" android:textStyle="bold" />
+            <TextView android:id="@+id/duplicateText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="⚠ SIMILAR" android:textColor="#FF9F43" android:textSize="11sp" android:textStyle="bold" android:visibility="gone" />
+        </LinearLayout>
+        <TextView android:id="@+id/plasticTypeText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:maxLines="1" android:textColor="#FFFFFF" android:textSize="16sp" android:textStyle="bold" />
+        <TextView android:id="@+id/weightText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textColor="#CCCCCC" android:textSize="13sp" />
+        <TextView android:id="@+id/addressText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:ellipsize="end" android:maxLines="2" android:textColor="#999999" android:textSize="12sp" />
+        <TextView android:id="@+id/dateText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:textColor="#777777" android:textSize="11sp" />
+    </LinearLayout>
+</LinearLayout>
