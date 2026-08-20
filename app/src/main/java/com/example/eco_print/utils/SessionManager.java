@@ -108,6 +108,12 @@ public class SessionManager {
         return "admin".equalsIgnoreCase(getUserRole());
     }
 
+    public boolean isInventoryManager() {
+        return "inventory_manager".equalsIgnoreCase(
+                getUserRole()
+        );
+    }
+
     public boolean isApprovedCollector() {
         return isCollector()
                 && "approved".equalsIgnoreCase(

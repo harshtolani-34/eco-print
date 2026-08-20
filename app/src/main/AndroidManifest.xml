@@ -109,10 +109,45 @@
                 android:name=".AccountTypeActivity"
                 android:exported="false" />
 
+        <activity
+                android:name=".InventoryDashboardActivity"
+                android:exported="false" />
+
+        <activity
+                android:name=".CollectedPlasticActivity"
+                android:exported="false" />
+
+        <activity
+                android:name=".CreateProcessingBatchActivity"
+                android:exported="false" />
+
+        <activity
+                android:name=".ProcessingBatchListActivity"
+                android:exported="false" />
+
+        <activity
+                android:name=".ProcessingBatchDetailsActivity"
+                android:exported="false" />
+
+        <activity
+                android:name=".CreateFilamentActivity"
+                android:exported="false" />
+
+        <activity
+                android:name=".FilamentInventoryActivity"
+                android:exported="false" />
+
+        <activity
+                android:name=".InventoryTransactionHistoryActivity"
+                android:exported="false" />
+
 
         <activity
                 android:name=".MainActivity"
                 android:exported="true">
+            <!-- Add these lines INSIDE the existing <application> tag. -->
+
+
 
 
 

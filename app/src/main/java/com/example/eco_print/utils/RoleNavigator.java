@@ -7,6 +7,8 @@ import com.example.eco_print.AdminDashboardActivity;
 import com.example.eco_print.CollectorApplicationStatusActivity;
 import com.example.eco_print.CollectorHomeActivity;
 import com.example.eco_print.HomeActivity;
+import com.example.eco_print.InventoryDashboardActivity;
+import com.example.eco_print.LoginActivity;
 
 public final class RoleNavigator {
 
@@ -20,8 +22,13 @@ public final class RoleNavigator {
     ) {
         Class<?> destination;
 
-        if (sessionManager.isAdmin()) {
+        if (sessionManager == null
+                || !sessionManager.isLoggedIn()) {
+            destination = LoginActivity.class;
+        } else if (sessionManager.isAdmin()) {
             destination = AdminDashboardActivity.class;
+        } else if (sessionManager.isInventoryManager()) {
+            destination = InventoryDashboardActivity.class;
         } else if (sessionManager.isApprovedCollector()) {
             destination = CollectorHomeActivity.class;
         } else if (sessionManager.isCollector()) {
@@ -31,6 +38,7 @@ public final class RoleNavigator {
         }
 
         Intent intent = new Intent(activity, destination);
+
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK

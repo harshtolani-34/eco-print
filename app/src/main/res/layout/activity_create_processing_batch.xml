@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#0D0F0E"
+        android:fillViewport="true">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <ImageButton
+                    android:id="@+id/backButton"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Back"
+                    android:src="@android:drawable/ic_media_previous" />
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:text="Create Processing Batch"
+                    android:textColor="#FFFFFF"
+                    android:textSize="23sp"
+                    android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="#171B18"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+            <TextView
+                    android:id="@+id/reportText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#A8B0AB"
+                    android:textSize="13sp" />
+
+            <TextView
+                    android:id="@+id/plasticTypeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            <TextView
+                    android:id="@+id/inputWeightText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="#7CFF5B"
+                    android:textSize="15sp" />
+        </LinearLayout>
+
+        <EditText
+                android:id="@+id/usableWeightEditText"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/input_background"
+                android:hint="Usable plastic weight (kg)"
+                android:inputType="numberDecimal"
+                android:padding="16dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#8A918D" />
+
+        <EditText
+                android:id="@+id/rejectedWeightEditText"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/input_background"
+                android:hint="Rejected plastic weight (kg)"
+                android:inputType="numberDecimal"
+                android:padding="16dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#8A918D" />
+
+        <EditText
+                android:id="@+id/notesEditText"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/input_background"
+                android:gravity="top"
+                android:hint="Processing notes (optional)"
+                android:inputType="textMultiLine"
+                android:padding="16dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#8A918D" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/createButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="20dp"
+                android:text="CREATE PROCESSING BATCH" />
+    </LinearLayout>
+</ScrollView>
